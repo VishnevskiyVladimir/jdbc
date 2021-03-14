@@ -1,9 +1,19 @@
 package com.vishdev.jdbc.starter;
 
+import com.vishdev.jdbc.starter.util.PropertiesUtil;
 import org.intellij.lang.annotations.Language;
 
 public interface Queries {
     String SQL_DIALECT = "PostgreSQL";
+
+    /*================== DDL operations=======================  */
+
+    @Language(SQL_DIALECT)
+    String CREATE_TABLE_INFO = """
+            CREATE TABLE IF NOT EXISTS info (
+            id SERIAL PRIMARY KEY ,
+            data TEXT NOT NULL );
+                        """;
 
 
     /*================== DML (UPDATE, INSERT, DELETE)=======================  */
