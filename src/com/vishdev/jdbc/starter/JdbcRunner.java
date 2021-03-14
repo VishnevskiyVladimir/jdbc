@@ -16,10 +16,40 @@ import static java.time.LocalTime.now;
 public class JdbcRunner {
 
     public static void main(String[] args) throws SQLException {
-        Long flightId = 2L;
+//        Long flightId = 2L;
 //        System.out.println(getTicketsByFlightId(flightId));
-        System.out.println(getFlightsBetween(LocalDate.of(2020,10,1).atStartOfDay(), LocalDateTime.now()));
+//        System.out.println(getFlightsBetween(LocalDate.of(2020,10,1).atStartOfDay(), LocalDateTime.now()));
+        checkMetadata();
+    }
 
+    private static void checkMetadata() throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            var catalogs = metaData.getCatalogs();
+            while (catalogs.next()) {
+                var catalog = catalogs.getString("TABLE_CAT");
+                System.out.println("Found database " + catalog);
+                var schemas = metaData.getSchemas();
+                System.out.println(" It contains following schemas:");
+                while (schemas.next()) {
+                    var schema = schemas.getString("TABLE_SCHEM");
+                    System.out.println("    * " + schema);
+                    var tables = metaData.getTables(catalog, schema, "%", new String[]{"TABLE"});
+                    if (schema.equals("public")) {
+                        System.out.println("        with following tables:");
+                        while (tables.next()) {
+                            var table = tables.getString("TABLE_NAME");
+                            System.out.println("            - " + table);
+                            var columns = metaData.getColumns(catalog, schema, table, "%");
+                            while (columns.next()) {
+                                System.out.println("                column name: " + columns.getString("COLUMN_NAME") +
+                                        " data type from java.sql.Types: " + columns.getString("DATA_TYPE"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static List<Long> getFlightsBetween(LocalDateTime start, LocalDateTime end) throws SQLException {
