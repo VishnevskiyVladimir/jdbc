@@ -58,6 +58,10 @@ public class JdbcRunner {
         ArrayList<Long> tickets = new ArrayList<>();
         try (Connection connection = ConnectionManager.open();
              var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setFetchSize(50);
+            preparedStatement.setQueryTimeout(10);
+            preparedStatement.setMaxRows(100);
+
             preparedStatement.setLong(1, flightId);
             var resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
