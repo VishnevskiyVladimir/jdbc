@@ -8,13 +8,19 @@ public interface Queries {
 
     /*================== DML (UPDATE, INSERT, DELETE)=======================  */
     @Language(SQL_DIALECT)
+    String INSERT_1_RECORD_EXAMPLE = """
+               INSERT INTO info (data)
+               VALUES
+               ('TEST1');
+            """;
+    @Language(SQL_DIALECT)
     String INSERT_EXAMPLE = """
                INSERT INTO info (data)
                VALUES
                ('TEST1'),
                ('TEST2'),
                ('TEST3'),
-               ('TEST1');
+               ('TEST4');
             """;
     @Language(SQL_DIALECT)
     String UPDATE_EXAMPLE = """

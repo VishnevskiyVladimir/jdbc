@@ -14,13 +14,13 @@ public class JdbcRunner {
         try (var connection = ConnectionManager.open();
              var statement = connection.createStatement()
         ) {
-            var executeResult = statement.executeQuery(Queries.SELECT_EXAMPLE);
-
-            while (executeResult.next()) {
-                System.out.print(executeResult.getLong("id") + "  ");
-                System.out.println(executeResult.getString("data"));
-
+//            var executeResult = statement.executeUpdate(Queries.INSERT_1_RECORD_EXAMPLE,statement.RETURN_GENERATED_KEYS);
+            var executeResult = statement.executeUpdate(Queries.INSERT_EXAMPLE,statement.RETURN_GENERATED_KEYS);
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            while (generatedKeys.next()){
+                System.out.println(generatedKeys.getLong("id"));
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
