@@ -11,34 +11,25 @@ import java.sql.Statement;
 
 public class TransactionRunner {
     public static void main(String[] args) throws SQLException {
-        @Language(Queries.SQL_DIALECT)
-        String deleteFlightSql = """
-                DELETE FROM flight
-                WHERE id = ?;
-                """;
-        @Language(Queries.SQL_DIALECT)
-        String deleteTicketSql = """
-                DELETE FROM ticket
-                WHERE flight_id = ?;
-                """;
-        long flightId = 8;
-        Connection connection = null;
-        PreparedStatement deleteFlightStatement = null;
-        PreparedStatement deleteTicketStatement = null;
-        try  {
-            connection = ConnectionManager.open();
-            deleteFlightStatement = connection.prepareStatement(deleteFlightSql);
-            deleteTicketStatement = connection.prepareStatement(deleteTicketSql);
-            connection.setAutoCommit(false);
 
-            deleteFlightStatement.setLong(1, flightId);
-            deleteTicketStatement.setLong(1, flightId);
-            deleteTicketStatement.executeUpdate();
-            if(true) {
-                throw new RuntimeException("Oops");
-            }
-            deleteFlightStatement.executeUpdate();
+        long flightId = 8;
+        @Language(Queries.SQL_DIALECT)
+        var deleteFlightSql = "DELETE FROM flight WHERE id = " + flightId;
+        @Language(Queries.SQL_DIALECT)
+        var deleteTicketSql = "DELETE FROM ticket WHERE flight_id = " + flightId;
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = ConnectionManager.open();
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
+
+            statement.addBatch(deleteTicketSql);
+            statement.addBatch(deleteFlightSql);
+            int[] ints = statement.executeBatch();
             connection.commit();
+
         } catch (Exception e) {
             if (connection != null) {
                 connection.rollback();
@@ -48,11 +39,8 @@ public class TransactionRunner {
             if (connection != null) {
                 connection.close();
             }
-            if(deleteFlightStatement != null) {
-                deleteFlightStatement.close();
-            }
-            if (deleteTicketStatement != null) {
-                deleteTicketStatement.close();
+            if (statement != null) {
+                statement.close();
             }
         }
     }
