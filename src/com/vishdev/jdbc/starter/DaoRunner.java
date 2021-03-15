@@ -2,6 +2,7 @@ package com.vishdev.jdbc.starter;
 
 
 import com.vishdev.jdbc.starter.dao.TicketDao;
+import com.vishdev.jdbc.starter.dto.TicketFilter;
 import com.vishdev.jdbc.starter.entity.Ticket;
 
 import java.math.BigDecimal;
@@ -9,8 +10,9 @@ import java.math.BigDecimal;
 public class DaoRunner {
 
     public static void main(String[] args) {
-//        deleteTest(57L);
-        saveTest();
+        var ticketFilter = new TicketFilter(3, 0, "Евгений Кудрявцев", "A1");
+        var tickets = TicketDao.getInstance().findAll(ticketFilter);
+        System.out.println(tickets);
     }
 
     private static void deleteTest(Long id) {
