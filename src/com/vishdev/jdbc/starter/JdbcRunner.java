@@ -23,7 +23,7 @@ public class JdbcRunner {
     }
 
     private static void checkMetadata() throws SQLException {
-        try (Connection connection = ConnectionManager.open()) {
+        try (Connection connection = ConnectionManager.get()) {
             DatabaseMetaData metaData = connection.getMetaData();
             var catalogs = metaData.getCatalogs();
             while (catalogs.next()) {
@@ -61,7 +61,7 @@ public class JdbcRunner {
                 """;
         ArrayList<Long> flights = new ArrayList<>();
 
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(sql)) {
             System.out.println(preparedStatement);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(start));
@@ -86,7 +86,7 @@ public class JdbcRunner {
                 """;
 
         ArrayList<Long> tickets = new ArrayList<>();
-        try (Connection connection = ConnectionManager.open();
+        try (Connection connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setFetchSize(50);
             preparedStatement.setQueryTimeout(10);
