@@ -50,6 +50,7 @@ public class TicketDao {
     private TicketDao() {
     }
 
+
     public List<Ticket> findAll(TicketFilter filter) {
         List<Object> parameters = new ArrayList<>();
         List<String> whereSql = new ArrayList<>();
