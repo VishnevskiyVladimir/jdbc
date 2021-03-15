@@ -19,7 +19,12 @@ public class JdbcRunner {
 //        Long flightId = 2L;
 //        System.out.println(getTicketsByFlightId(flightId));
 //        System.out.println(getFlightsBetween(LocalDate.of(2020,10,1).atStartOfDay(), LocalDateTime.now()));
-        checkMetadata();
+
+        try{
+            checkMetadata();
+        } finally {
+            ConnectionManager.closePool();
+        }
     }
 
     private static void checkMetadata() throws SQLException {
